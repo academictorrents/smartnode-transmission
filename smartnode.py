@@ -114,6 +114,7 @@ for torrentid in torrents:
                     print("Updating tracker at index",index)
                     client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
                     client.reannounce(torrentid)
+                    time.sleep(5)
                     
         
 
