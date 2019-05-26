@@ -2,4 +2,5 @@ https://academictorrents.com/collection/medical.csv
 https://academictorrents.com/collection/joes-small-mirror-list.csv
 https://academictorrents.com/collection/deep-learning.csv
 https://academictorrents.com/collection/computer-vision.csv
+https://academictorrents.com/collection/video-lectures.csv
 
