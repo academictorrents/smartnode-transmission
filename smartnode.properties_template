@@ -1,0 +1,8 @@
+[Transmission]
+address = hostname
+port = 9091
+user = user
+password = password
+
+[AcademicTorrents]
+api_key = uid=99999;pass=laskdjfkasjdfnkajsdf
