@@ -43,7 +43,7 @@ tohave_torrents = tohave_torrents.drop_duplicates()
 print("Total torrents from all collections: ", len(tohave_torrents))
 
 if not os.path.isfile(managed_torrents_file):
-    managed_torrents.to_csv(managed_torrents_file)
+    tohave_torrents.to_csv(managed_torrents_file)
     
 managed_torrents = pd.read_csv(managed_torrents_file)
 managed_torrents.set_index("INFOHASH", inplace=True)
@@ -64,13 +64,11 @@ def get_userannounce():
     return userannounce
 
 
-
-import transmissionrpc
 import configparser
 config = configparser.RawConfigParser()
 config.read('smartnode.properties')
 
-client = transmissionrpc.Client(address = config.get("Transmission","address"), 
+client = lib.transmissionrpc.Client(address = config.get("Transmission","address"), 
                                 port=int(config.get("Transmission","port")),
                                 user = config.get("Transmission","user"), 
                                 password = config.get("Transmission","password"))
