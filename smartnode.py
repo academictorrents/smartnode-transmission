@@ -81,19 +81,42 @@ client = transmissionrpc.Client(address = config.get("Transmission","address"),
 
 
 torrents = client.list()
+torrents_in_server = set([torrents[t].hashString for t in torrents])
+
+
+download_path = client.get_session().download_dir
+cookies = config.get("AcademicTorrents","api_key")
+
+
+# add what we don't have
+for torrent in tohave_torrents.index:
+    if torrent not in torrents_in_server:
+        free_space = client.free_space(download_path)
+        print("Free space: ", free_space)
+        if (free_space > 10000000):
+            url = "https://academictorrents.com/download/" + torrent + ".torrent"
+            print("Adding ", url)
+            client.add_torrent(url, cookies=cookies)
+    
+
+# check to remove or update trackers
 for torrentid in torrents:
     torrentobj = torrents[torrentid]
     
-    # use the different between tohave_torrents and managed_torrents to remove torrents
     if torrentobj.hashString in toremove_torrents:
         print("Something to remove", torrentobj.hashString, torrentid, torrentobj.name)
         # do something to remove it
         
-    if torrentobj.hashString in managed_torrents.index:
+    if torrentobj.hashString in tohave_torrents.index:
         print(torrentobj.hashString, torrentid, torrentobj.name)
-        
-        client.change_torrent(torrentid, trackerReplace=[0,get_userannounce()])
-        
+        torrentobj = client.get_torrent(torrentid)
+        for index, tracker in enumerate(torrentobj.trackers):
+            if ("academictorrents.com" in tracker["announce"]):
+                if (tracker["announce"] != get_userannounce()):
+                    print("Updating tracker at index",index)
+                    client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
+                    client.reannounce(torrentid)
+                    
         
 
 # filter tohave_torrents based on what we have with some sort of logic
