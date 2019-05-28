@@ -95,7 +95,7 @@ for torrent in tohave_torrents.index:
             url = "https://academictorrents.com/download/" + torrent + ".torrent"
             print("Adding ", url)
             client.add_torrent(url, cookies=cookies)
-    
+            time.sleep(5)    
 
 # check to remove or update trackers
 for torrentid in torrents:
@@ -105,23 +105,22 @@ for torrentid in torrents:
         print("Something to remove", torrentobj.hashString, torrentid, torrentobj.name)
         # do something to remove it
         
-    if torrentobj.hashString in tohave_torrents.index:
-        print(torrentobj.hashString, torrentid, torrentobj.name)
-        torrentobj = client.get_torrent(torrentid)
-        for index, tracker in enumerate(torrentobj.trackers):
-            if ("academictorrents.com" in tracker["announce"]):
-                if (tracker["announce"] != get_userannounce()):
-                    print("Updating tracker at index",index)
-                    client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
-                    client.reannounce(torrentid)
-                    time.sleep(5)
+    #if torrentobj.hashString in tohave_torrents.index:
+    print(torrentobj.hashString, torrentid, torrentobj.name)
+    torrentobj = client.get_torrent(torrentid)
+    for index, tracker in enumerate(torrentobj.trackers):
+        if ("academictorrents.com" in tracker["announce"]):
+            if (tracker["announce"] != get_userannounce()):
+                print("Updating tracker at index",index)
+                client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
+                client.reannounce(torrentid)
+
                     
         
 
 # filter tohave_torrents based on what we have with some sort of logic
 
 
-# download everything in tohave_torrents
 
 
 
