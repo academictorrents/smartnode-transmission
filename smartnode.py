@@ -86,6 +86,27 @@ download_path = client.get_session().download_dir
 cookies = config.get("AcademicTorrents","api_key")
 
 
+def fix_trackers():
+    # check to remove or update trackers
+    for torrentid in torrents:
+        torrentobj = torrents[torrentid]
+        
+#         if torrentobj.hashString in toremove_torrents:
+#             print("Something to remove", torrentobj.hashString, torrentid, torrentobj.name)
+#             # do something to remove it
+            
+        #if torrentobj.hashString in tohave_torrents.index:
+        #print(torrentobj.hashString, torrentid, torrentobj.name)
+        torrentobj = client.get_torrent(torrentid)
+        for index, tracker in enumerate(torrentobj.trackers):
+            if ("academictorrents.com" in tracker["announce"]):
+                if (tracker["announce"] != get_userannounce()):
+                    print("Updating tracker at index",index, torrentobj.hashString, torrentid, torrentobj.name)
+                    client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
+                    client.reannounce(torrentid)
+
+
+
 # add what we don't have
 for torrent in tohave_torrents.index:
     if torrent not in torrents_in_server:
@@ -95,27 +116,13 @@ for torrent in tohave_torrents.index:
             url = "https://academictorrents.com/download/" + torrent + ".torrent"
             print("Adding ", url)
             client.add_torrent(url, cookies=cookies)
-            time.sleep(5)    
+            time.sleep(10)   
+            fix_trackers() 
+            time.sleep(60) 
 
-# check to remove or update trackers
-for torrentid in torrents:
-    torrentobj = torrents[torrentid]
-    
-    if torrentobj.hashString in toremove_torrents:
-        print("Something to remove", torrentobj.hashString, torrentid, torrentobj.name)
-        # do something to remove it
-        
-    #if torrentobj.hashString in tohave_torrents.index:
-    print(torrentobj.hashString, torrentid, torrentobj.name)
-    torrentobj = client.get_torrent(torrentid)
-    for index, tracker in enumerate(torrentobj.trackers):
-        if ("academictorrents.com" in tracker["announce"]):
-            if (tracker["announce"] != get_userannounce()):
-                print("Updating tracker at index",index)
-                client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
-                client.reannounce(torrentid)
 
-                    
+
+fix_trackers()          
         
 
 # filter tohave_torrents based on what we have with some sort of logic
