@@ -115,10 +115,13 @@ for torrent in tohave_torrents.index:
         if (free_space > 10000000):
             url = "https://academictorrents.com/download/" + torrent + ".torrent"
             print(url)
-            resp = requests.get(url=url, cookies=cookie_key).content                                    
-            client.add_torrent(base64.b64encode(resp).decode('utf-8'))
-            client.add_torrent(url, cookies=cookies)
-            time.sleep(30) 
+            try:
+                resp = requests.get(url=url, cookies=cookie_key).content                                    
+                client.add_torrent(base64.b64encode(resp).decode('utf-8'))
+                client.add_torrent(url, cookies=cookies)
+                time.sleep(30) 
+            except Exception as e: 
+                print(e)
 
 
 
