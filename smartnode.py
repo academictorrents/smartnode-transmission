@@ -8,6 +8,8 @@ import getpass
 import urllib
 import re, os
 import pandas as pd
+import base64
+import requests
 
 managed_torrents_file = "managed_torrents.csv"
 tohave_torrents_file = "tohave_torrents.csv"
@@ -52,18 +54,6 @@ toremove_torrents = set(managed_torrents.index) - set(tohave_torrents.index)
 
 
 
-userannounce = None
-def get_userannounce():
-    global userannounce
-    if userannounce is None:
-        import requests
-        key = config.get("AcademicTorrents","api_key")
-        cookie_key = dict([k.split("=") for k in key.split(";")])
-        resp = requests.get(url="https://academictorrents.com/apiv2/userannounce", cookies=cookie_key)
-        userannounce = resp.json()["userannounce"] # Check the JSON Response Content documentation below
-    return userannounce
-
-
 import configparser
 config = configparser.RawConfigParser()
 config.read('smartnode.properties')
@@ -84,6 +74,16 @@ torrents_in_server = set([torrents[t].hashString for t in torrents])
 
 download_path = client.get_session().download_dir
 cookies = config.get("AcademicTorrents","api_key")
+cookie_key = dict([k.split("=") for k in cookies.split(";")])
+
+
+userannounce = None
+def get_userannounce():
+    global userannounce
+    if userannounce is None:
+        resp = requests.get(url="https://academictorrents.com/apiv2/userannounce", cookies=cookie_key)
+        userannounce = resp.json()["userannounce"] # Check the JSON Response Content documentation below
+    return userannounce
 
 
 def fix_trackers():
@@ -105,7 +105,7 @@ def fix_trackers():
                     client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
                     client.reannounce(torrentid)
 
-
+fix_trackers()
 
 # add what we don't have
 for torrent in tohave_torrents.index:
@@ -114,15 +114,14 @@ for torrent in tohave_torrents.index:
         print("Free space: ", free_space)
         if (free_space > 10000000):
             url = "https://academictorrents.com/download/" + torrent + ".torrent"
-            print("Adding ", url)
+            resp = requests.get(url=url, cookies=cookie_key).content                                    
+            client.add_torrent(base64.b64encode(resp).decode('utf-8'))
             client.add_torrent(url, cookies=cookies)
-            time.sleep(10)   
-            fix_trackers() 
-            time.sleep(60) 
+            time.sleep(30) 
 
 
 
-fix_trackers()          
+        
         
 
 # filter tohave_torrents based on what we have with some sort of logic
