@@ -74,12 +74,16 @@ torrents_in_server = set([torrents[t].hashString for t in torrents])
 
 download_path = client.get_session().download_dir
 cookies = config.get("AcademicTorrents","api_key")
-cookie_key = dict([k.split("=") for k in cookies.split(";")])
+cookie_key = ""
+if cookies != "":
+    cookie_key = dict([k.split("=") for k in cookies.split(";")])
 
 
 userannounce = None
 def get_userannounce():
     global userannounce
+    if cookie_key == "":
+        userannounce = "https://academictorrents.com/announce.php"
     if userannounce is None:
         resp = requests.get(url="https://academictorrents.com/apiv2/userannounce", cookies=cookie_key)
         userannounce = resp.json()["userannounce"] # Check the JSON Response Content documentation below
