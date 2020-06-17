@@ -9,6 +9,8 @@ import urllib
 import re, os
 import json
 
+print(sys.argv[1])
+
 servers = json.load(open(".seedboxes_logins.json", "r"))
 
 allstats = []
@@ -36,12 +38,13 @@ for server in servers:
         stats["torrentCount"] = session._fields["torrentCount"].value
         stats["uploadSpeed"] = session._fields["uploadSpeed"].value
     except Exception as ex:
-        stats["error"] = ex.original
+        stats["error"] = str(ex.original)
     except:
-        stats["error"] = sys.exc_info()[0]
-#print(stats)
-allstats.append(stats)
+        stats["error"] = str(sys.exc_info()[0])
+        
+    #print(stats)
+    allstats.append(stats)
 
 
-json.dump(allstats, open("seedboxes.json", "w"), indent=1)
+json.dump(allstats, open(sys.argv[1] + "seedboxes.json", "w"), indent=1)
 
