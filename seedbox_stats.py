@@ -62,9 +62,14 @@ for server in servers:
         stats["uploadSpeed"] = session._fields["uploadSpeed"].value
         stats["uploadSpeed_human"] = "{}/s".format(humanbytes(stats["uploadSpeed"]))
     except Exception as ex:
-        stats["error"] = str(ex.original)
+        if "HTTP" in str(ex.original):
+            stats["error"] = "HTTP Error"
+        else:
+            stats["error"] = "Unknown Error"
+        print(str(ex.original))
     except:
-        stats["error"] = str(sys.exc_info()[0])
+        stats["error"] = "Unknown Error"
+        print(str(sys.exc_info()[0]))
         
     #print(stats)
     allstats.append(stats)
