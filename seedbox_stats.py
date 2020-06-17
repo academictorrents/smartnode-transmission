@@ -19,6 +19,7 @@ for server in servers:
 
     stats = {}
     stats["time"] = time.time()
+    stats["ctime"] = time.ctime()
     stats["name"] = server["name"]
     
     print(stats["name"])
