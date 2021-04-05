@@ -112,12 +112,16 @@ def fix_trackers():
 fix_trackers()
 
 # add what we don't have
-for torrent in tohave_torrents.index:
-    if torrent not in torrents_in_server:
+print("To download " + str(len(tohave_torrents.index)))
+#print(tohave_torrents)
+for index, torrent in tohave_torrents.iterrows():
+    if torrent.name not in torrents_in_server:
+        print("INFOHASH: " + torrent.name)
+        print("SIZEBYTES: " + str(torrent["SIZEBYTES"]))
         free_space = client.free_space(download_path)
         print("Free space: ", free_space)
-        if (free_space > 10000000):
-            url = "https://academictorrents.com/download/" + torrent + ".torrent"
+        if ((torrent["SIZEBYTES"] < 100000000000) and (free_space > torrent["SIZEBYTES"]*2)):
+            url = "https://academictorrents.com/download/" + torrent.name + ".torrent"
             print(url)
             try:
                 resp = requests.get(url=url, cookies=cookie_key).content                                    
@@ -126,6 +130,8 @@ for torrent in tohave_torrents.index:
                 time.sleep(30) 
             except Exception as e: 
                 print(e)
+        else:
+            print("Skipping due to size")
 
 
 
