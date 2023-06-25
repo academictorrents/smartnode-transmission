@@ -109,7 +109,7 @@ def fix_trackers():
                     client.change_torrent(torrentid, trackerReplace=[index,get_userannounce()])
                     client.reannounce(torrentid)
 
-fix_trackers()
+#fix_trackers()
 
 # add what we don't have
 print("To download " + str(len(tohave_torrents.index)))
