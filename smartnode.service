@@ -1,0 +1,13 @@
+[Unit]
+Description=Smartnode Transmission sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/root/smartnode-transmission
+ExecStart=/usr/bin/python3 -u /root/smartnode-transmission/smartnode.py
+# journald captures stdout/stderr; also keep the plain log file
+StandardOutput=append:/root/smartnode-transmission/smartnode.log
+StandardError=append:/root/smartnode-transmission/smartnode.log
+TimeoutStartSec=6h

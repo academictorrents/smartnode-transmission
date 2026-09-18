@@ -1,0 +1,12 @@
+[Unit]
+Description=Run smartnode every 12 hours
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=12h
+AccuracySec=1min
+Persistent=true
+Unit=smartnode.service
+
+[Install]
+WantedBy=timers.target

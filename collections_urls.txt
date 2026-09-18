@@ -3,4 +3,6 @@ https://academictorrents.com/collection/joes-small-mirror-list.csv
 https://academictorrents.com/collection/deep-learning.csv
 https://academictorrents.com/collection/computer-vision.csv
 https://academictorrents.com/collection/video-lectures.csv
-
+https://academictorrents.com/collection/security.csv
+https://academictorrents.com/collection/imagenet.csv
+https://academictorrents.com/collection/joes-recommended-mirror-list.csv
